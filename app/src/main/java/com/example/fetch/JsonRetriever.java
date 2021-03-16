@@ -16,6 +16,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
+/**
+ *  Performs the task of retrieving the JSON data from the URL endpoit.
+ **/
+
 public class JsonRetriever extends AsyncTask<String, String, JSONArray> {
 
     private AsyncResponse mDelegate = null;
@@ -33,7 +37,7 @@ public class JsonRetriever extends AsyncTask<String, String, JSONArray> {
     protected JSONArray doInBackground(String... strings) {
         HttpURLConnection connection = null;
         BufferedReader reader = null;
-        Log.d("TAG: ", " doInBackground INVOKED");
+
         try{
             URL url = new URL(strings[0]);
             connection = (HttpURLConnection) url.openConnection();
@@ -45,26 +49,23 @@ public class JsonRetriever extends AsyncTask<String, String, JSONArray> {
             StringBuffer buffer = new StringBuffer();
             String line = "";
 
-            //ArrayList<String> responseArray = new ArrayList<String>();
+
             JSONArray responseArray = new JSONArray();
 
             while( (line = reader.readLine()) != null ){
                 buffer.append(line+"\n");
-                Log.d("Response: ", ">" + line);
 
-                //responseArray.add(line);
                 if(!line.equals("[") && !line.equals("]"))
                     responseArray.put(new JSONObject(line));
             }
 
-            return responseArray;//buffer.toString();
+            return responseArray;
 
         } catch(MalformedURLException e){
             e.printStackTrace();
         } catch(IOException e){
             e.printStackTrace();
         } catch (JSONException e) {
-            Log.d("JSON ERROR: ", "Printing JSON ERROR STACK TRACE\n");
             e.printStackTrace();
         }
         return null;
@@ -74,7 +75,5 @@ public class JsonRetriever extends AsyncTask<String, String, JSONArray> {
     protected void onPostExecute(JSONArray result){
         if(result != null)
             mDelegate.processFinish(result);
-        else
-            Log.d("POST EXECUTE MESSAGE: ", " RESULT WAS NULL");
     }
 }

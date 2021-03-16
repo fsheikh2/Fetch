@@ -11,9 +11,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse{
-    private JSONArray mJSONObject;
     private RecyclerView mFetchRecycler;
     private FetchViewAdapter mFetchViewAdapter;
     private JsonRetriever mJsonRetriever;
@@ -32,28 +33,22 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse{
         mJsonRetriever = new JsonRetriever();
         mJsonRetriever.setDelegate(this);
         mJsonRetriever.execute("https://fetch-hiring.s3.amazonaws.com/hiring.json");
-
-
     }
 
     @Override
     public void processFinish(JSONArray output){
-        mJSONObject = output;
-        if(mJSONObject != null) {
-            for (int i = 0; i < mJSONObject.length(); i++) {
+        if(output != null) {
+            for (int i = 0; i < output.length(); i++) {
                 try {
-                    JSONObject singleFetchInfo = (JSONObject) mJSONObject.get(i);
+                    JSONObject singleFetchInfo = (JSONObject) output.get(i);
 
-                    //String tempID = Integer.toString( (Integer) singleFetchInfo.get("id") );
-                    //String tempListID = Integer.toString( (Integer) singleFetchInfo.get("listId") );
-                    //String tempName =  (String) singleFetchInfo.get("name");
 
-                    // If any of the methods below through an exception due to improper formatting or if
-                    // the name element is an empty string ("") we'll skip adding it to the recycler view
+                    // If any of the methods below throw an exception due to improper formatting or if
+                    // the name element is either an empty string or null we'll skip adding it to the recycler view
                     Integer tempID = singleFetchInfo.getInt("id");
                     Integer tempListID = singleFetchInfo.getInt("listId");
                     String tempName = singleFetchInfo.getString("name");
-                    if(!tempName.equals("")){
+                    if(!tempName.equals("") && !tempName.equals("null")){
                         FetchView temp = new FetchView(tempID.toString(), tempListID.toString(), tempName );
                         mFVList.add(temp);
                     }
@@ -62,9 +57,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse{
                     e.printStackTrace();
                     continue;
                 }
-
             }
         }
+        Collections.sort(mFVList, FetchView.Comparators.NAMEANDLISTID);
         mFetchViewAdapter = new FetchViewAdapter(mFVList, this);
         mFetchRecycler.setAdapter(mFetchViewAdapter);
     }

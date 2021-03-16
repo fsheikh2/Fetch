@@ -11,6 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+/**
+ * A simple adapter for the recycler view.
+ **/
 public class FetchViewAdapter extends RecyclerView.Adapter<FetchViewAdapter.FetchHolder>{
 
     private Context mContext;
@@ -32,8 +35,8 @@ public class FetchViewAdapter extends RecyclerView.Adapter<FetchViewAdapter.Fetc
     @Override
     public void onBindViewHolder(@NonNull FetchViewAdapter.FetchHolder holder, int position) {
         FetchView fetchView = mFetchList.get(position);
-        holder.mListId.setText( Integer.toString( fetchView.getID() ) );
-        holder.mItemView.setText( Integer.toString( fetchView.getListID() ) );
+        holder.mIdView.setText( Integer.toString( fetchView.getID() ) );
+        holder.mListId.setText( Integer.toString( fetchView.getListID() ) );
         holder.mName.setText(fetchView.getName());
     }
 
@@ -43,13 +46,13 @@ public class FetchViewAdapter extends RecyclerView.Adapter<FetchViewAdapter.Fetc
     }
 
     public class FetchHolder extends RecyclerView.ViewHolder{
-        public TextView mItemView;
+        public TextView mIdView;
         public TextView mListId;
         public TextView mName;
 
         public FetchHolder(View itemView){
             super(itemView);
-            mItemView = (TextView) itemView.findViewById(R.id.fetchIdView);
+            mIdView = (TextView) itemView.findViewById(R.id.fetchIdView);
             mListId = (TextView) itemView.findViewById(R.id.fetchListIdView);
             mName = (TextView) itemView.findViewById(R.id.fetchNameView);
         }
